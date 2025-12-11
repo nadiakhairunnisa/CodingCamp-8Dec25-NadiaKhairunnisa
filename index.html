@@ -3,11 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>testing</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+        <style> 
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        label { display: inside; margin-top: 10px; }
+        input {
+            padding: 8px;
+            width: 250px;
+            margin-top: 4px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f2f2f2;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>
-        Hello, World!
-    </h1>
+    <div class="container">
+        <h1 class="text-3xl font-bold">Todo List</h1>
+        <br><p class="text-center mb-6">This is a to-do list project, have a nice day!</p>
+        
+        <!-- input todo -->
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="add todo...">
+            <input type="date" id="dateInput" class="text-gray-500">
+            <button onclick="addTask()">+</button>
+        </div>
+
+        <!-- filter box -->
+        <br><div class="filter-box">
+            <select id="filter" onchange="filterTask()">
+                <option value="all">all</option>
+                <option value="active">ongoing</option>
+                <option value="completed">finished</option>
+            </select>
+        </div>
+
+        <!-- list -->
+         <ul id="taskList"></ul>
+
+    </div>
+    
+    <script src="script.js"></script>
+
 </body>
 </html>
