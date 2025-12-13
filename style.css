@@ -8,7 +8,8 @@ body {
 
 .container {
     display: block;
-    width:auto;
+    margin:50px auto;
+    width:fit-content;
     background: #ffffff;
     padding: 15px;
     border-radius: 12px;
@@ -34,14 +35,26 @@ input {
 }
 
 .filter-box {
-    width: fit-content;
+    width: auto;
     background: #ccd8e4;
     border-radius: 4px;
     padding: 10px;
 }
 
+.task-box {
+    width: auto;       
+    margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-height: 100px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
 button {
     padding: 10px 15px;
+    margin-top: 4px;
     border: none;
     border-radius: 6px;
     background: #4a7dff;
@@ -56,7 +69,6 @@ button:hover {
 ul {
     list-style: none;
     padding: 0;
-    margin-top: 20px;
 }
 
 li {
@@ -77,6 +89,18 @@ li.completed {
 .delete-btn {
     background: red;
     color: white;
+    margin-top: 0px;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 7px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background: rgb(89, 243, 69);
+    color: white;
+    margin-top: 0px;
+    gap: 10px;
     border: none;
     border-radius: 4px;
     padding: 5px 7px;

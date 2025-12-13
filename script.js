@@ -1,151 +1,117 @@
-const taskList = document.getElementById("taskList");
-const darkModeBtn = document.getElementById("darkModeBtn");
+const todoList = document.getElementById("todoList");
+const todoInput = document.getElementById("todoInput");
+const dateInput = document.getElementById("dateInput");
 
-// Load semua saat halaman dibuka
-document.addEventListener("DOMContentLoaded", () => {
-    loadTasks();
-    loadTheme();
-});
+/*display todo*/
+function addTodo() {
+        const input = document.getElementById("todoInput").value;
+        const inputdate = document.getElementById("dateInput").value;
+        /*const value = input.value.trim();*/
 
-/* --------------------- TAMBAHKAN TUGAS ----------------------- */
-function addTask() {
-    let taskText = document.getElementById("taskInput").value.trim();
-    let taskDate = document.getElementById("dateInput").value;
-
-    if (taskText === "") {
-        alert("Tugas tidak boleh kosong!");
+        if (input.trim() === "" || inputdate.trim() === "") {
+        alert("Nama task dan deadline harus diisi!");
         return;
-    }
-
-    createTaskElement(taskText, taskDate);
-    saveTasks();
-
-    document.getElementById("taskInput").value = "";
-    document.getElementById("dateInput").value = "";
-}
-
-function createTaskElement(text, date, completed = false) {
-    let li = document.createElement("li");
-    li.draggable = true;
-
-    li.className = completed ? "completed" : "";
-
-    li.innerHTML = `
-        <span class="task-text">${text}</span>
-        <span class="date-info">${date || ""}</span>
-        <div class="btn-box">
-            <button class="edit-btn">Edit</button>
-            <button class="delete-btn">Hapus</button>
-        </div>
-    `;
-
-    taskList.appendChild(li);
-}
-
-/* --------------------- CLICK EVENT ----------------------- */
-taskList.addEventListener("click", (e) => {
-    let li = e.target.closest("li");
-
-    if (e.target.classList.contains("task-text")) {
-        li.classList.toggle("completed");
-    }
-
-    if (e.target.classList.contains("delete-btn")) {
-        li.remove();
-    }
-
-    if (e.target.classList.contains("edit-btn")) {
-        let newText = prompt("Edit tugas:", li.querySelector(".task-text").innerText);
-        if (newText !== null && newText.trim() !== "") {
-            li.querySelector(".task-text").innerText = newText.trim();
         }
+
+        // Buat elemen <li> baru
+        let li = document.createElement("li");
+
+        // Tentukan warna berdasarkan deadline
+        li.style.background = getColor(inputdate);
+
+        // Isi text task
+        let span = document.createElement("span");
+        span.textContent = `${input} — ${inputdate}`;
+        li.appendChild(span);
+
+        // Masukkan ke dalam list
+        document.getElementById("todoList").appendChild(li);
+
+        // Tombol Edit
+        let editBtn = document.createElement("button");
+        // Tombol Delete
+        let delBtn = document.createElement("button");
+        delBtn.textContent = "Hapus";
+        editBtn.textContent = "Edit";
+        delBtn.className = "button:hover delete-btn";
+        editBtn.className = "button:hover edit-btn";
+        editBtn.onclick = function() {
+            editTask(span, li);
+        };
+        delBtn.onclick = function() {
+            li.remove();
+        };
+
+        li.appendChild(editBtn);
+        li.appendChild(delBtn);
+
+        // Edit task
+        function editTask(span, li) {
+        const [oldName, oldDeadline] = span.textContent.split(" — ");
+
+        let newName = prompt("Edit nama task:", oldName);
+        let newDeadline = prompt("Edit deadline (YYYY-MM-DD):", oldDeadline);
+
+        if (newName && newDeadline) {
+            span.textContent = `${newName} — ${newDeadline}`;
+            li.style.background = getColor(newDeadline);
+        }
+        }
+        
+        
+
+        document.getElementById("todoList").appendChild(li);
+
+        document.getElementById("input").value = "";
+        document.getElementById("inputdate").value = "";
     }
 
-    saveTasks();
-});
+    // Warna berdasarkan deadline
+    function getColor(inputdate) {
+        const today = new Date().toISOString().split("T")[0];
 
-/* --------------------- FILTER ----------------------- */
-function filterTasks() {
-    let filter = document.getElementById("filter").value;
-    let tasks = document.querySelectorAll("li");
-
-    tasks.forEach((li) => {
-        li.style.display =
-            filter === "all" ? "flex" :
-            filter === "active" && !li.classList.contains("completed") ? "flex" :
-            filter === "completed" && li.classList.contains("completed") ? "flex" :
-            "none";
-    });
-}
-
-/* --------------------- DARK MODE ----------------------- */
-darkModeBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("darkMode", document.body.classList.contains("dark"));
-});
-
-function loadTheme() {
-    if (localStorage.getItem("darkMode") === "true") {
-        document.body.classList.add("dark");
-    }
-}
-
-/* --------------------- DRAG & DROP ----------------------- */
-let dragItem = null;
-
-taskList.addEventListener("dragstart", (e) => {
-    dragItem = e.target;
-    e.target.classList.add("dragging");
-});
-
-taskList.addEventListener("dragend", (e) => {
-    e.target.classList.remove("dragging");
-    dragItem = null;
-    saveTasks();
-});
-
-taskList.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    const afterElement = getDragAfterElement(taskList, e.clientY);
-    if (afterElement == null) {
-        taskList.appendChild(dragItem);
-    } else {
-        taskList.insertBefore(dragItem, afterElement);
-    }
-});
-
-function getDragAfterElement(list, y) {
-    const draggable = [...list.querySelectorAll("li:not(.dragging)")];
-
-    return draggable.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-
-        if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
+        if (inputdate < today) {
+            return "#e93333ff"; // merah (telat)
+        } else if (inputdate === today) {
+            return "#8adaffff"; // oranye (hari ini)
         } else {
-            return closest;
+            return "#49fc49ff"; // hijau (masih jauh)
         }
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
+    }
 
-/* --------------------- SAVE & LOAD ----------------------- */
-function saveTasks() {
-    let data = [];
+    /* --------------------- FILTER ----------------------- */
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    document.querySelectorAll("li").forEach((li) => {
-        data.push({
-            text: li.querySelector(".task-text").innerText,
-            date: li.querySelector(".date-info").innerText,
-            completed: li.classList.contains("completed")
+    function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+    
+    function renderTasks() {
+        const list = document.getElementById("todoList");
+        list.innerHTML = "";
+
+        const filter = document.getElementById("filterSelect").value;
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+        // Filter task sesuai pilihan filter
+        let filteredTasks = tasks.filter(task => {
+            switch(filter) {
+                case 'today':
+                    return task.deadline === todayStr;
+                case 'tomorrow':
+                    return task.deadline === tomorrowStr;
+                case 'overdue':
+                    return task.deadline < todayStr;
+                case 'upcoming':
+                    return task.deadline > tomorrowStr;
+                case 'all':
+                default:
+                    return true;
+            }
         });
-    });
-
-    localStorage.setItem("tasks", JSON.stringify(data));
-}
-
-function loadTasks() {
-    let saved = JSON.parse(localStorage.getItem("tasks")) || [];
-
-    saved.forEach(t => createTaskElement(t.text, t.date, t.completed));
 }

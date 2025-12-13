@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>testing</title>
+    <title>todo-list web</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     
         <style> 
@@ -27,29 +27,32 @@
     </style>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <h1 class="text-3xl font-bold">Todo List</h1>
-        <br><p class="text-center mb-6">This is a to-do list project, have a nice day!</p>
+<body class="container">
+        <h1 class="text-3xl font-bold">To-do List</h1>
+        <p class="text-center">This is a to-do list project, have a nice day!</p>
         
         <!-- input todo -->
-        <div class="input-group">
-            <input type="text" id="taskInput" placeholder="add todo...">
-            <input type="date" id="dateInput" class="text-gray-500">
-            <button onclick="addTask()">+</button>
+        <div class="input-group p-3"> 
+            <input type="text" id="todoInput" placeholder="add todo...">
+            <input type="date" id="dateInput">
+            <button onclick="addTodo()">+</button>
         </div>
-
+            
         <!-- filter box -->
-        <br><div class="filter-box">
-            <select id="filter" onchange="filterTask()">
-                <option value="all">all</option>
-                <option value="active">ongoing</option>
-                <option value="completed">finished</option>
-            </select>
-        </div>
+        <label class="p-4 mb-6" for="filterSelect">Filter berdasarkan deadline:</label>
+        <select id="filterSelect" onchange="renderTasks()">
+        <option value="all">Semua</option>
+        <option value="today">Hari ini</option>
+        <option value="tomorrow">Besok</option>
+        <option value="overdue">Terlambat</option>
+        <option value="upcoming">Mendatang</option>
+        </select>
 
-        <!-- list -->
-         <ul id="taskList"></ul>
+        <!-- display list -->
+         <div class="task-box" id="todoList">
+            <ul id="todoList"></ul>
+  
+        </div>
 
     </div>
     
